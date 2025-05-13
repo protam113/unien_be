@@ -1,0 +1,66 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: unien_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Admin123
+      MONGODB_INITDB_DATABASE: unien_DB
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./addons/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - data:/data/db
+      - ../backup:/backup 
+    networks:
+      - unien_network
+    command: mongod --bind_ip_all
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: "3g"
+
+
+  redis:
+    image: redis:latest
+    container_name: unien_redis
+    command: ["redis-server", "--requirepass", "Hoang2003"]
+    ports:
+      - "6380:6379"
+    volumes:
+      - cache:/data/cache
+    networks:
+      - unien_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: "200m"
+
+
+volumes:
+  backup:
+    driver: local
+  cache:
+    driver: local
+  logs:
+    driver: local
+  data:       # 👈 thêm dòng này
+    driver: local
+
+networks:
+  unien_network:
+    driver: bridge
+
+

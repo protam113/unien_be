@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/axios": "^4.0.0",
     "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
@@ -29,6 +30,8 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.0",
     "@nestjs/schedule": "^6.0.0",
+    "@nestjs/terminus": "^11.0.0",
+    "axios": "^1.9.0",
     "bcrypt": "^6.0.0",
     "cache-manager": "^6.4.3",
     "cache-manager-ioredis": "^2.1.0",

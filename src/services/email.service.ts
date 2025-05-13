@@ -64,7 +64,7 @@ export class EmailService {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
          .header {
-            background: linear-gradient(135deg, #53bc26 0%, #3da015 100%);
+            background: linear-gradient(135deg, #F69429 0%,rgb(248, 166, 78) 100%);
             padding: 25px;
             text-align: center;
         }
@@ -82,7 +82,7 @@ export class EmailService {
             color: #333;
         }
         .highlight {
-            color: #0bd466;
+            color: #F69429;
             font-weight: bold;
         }
         .footer {
@@ -150,7 +150,7 @@ export class EmailService {
 <body>
     <div class="container">
         <div class="header">
-            <h2>Hust4L</h2>
+            <h2>Unien</h2>
         </div>
         
         <div class="content">

@@ -26,7 +26,7 @@ import { StatusCode, StatusType } from 'src/entities/status_code.entity';
 import { toDataResponse } from './project.mapper';
 import { CreateProjectResponse } from './responses/create_project.response';
 import { ServiceService } from '../service/service.service';
-import { buildProjectFilter } from '../../helpers/project,helper';
+import { buildProjectFilter } from '../../helpers/project.helper';
 
 @Injectable()
 export class ProjectService {

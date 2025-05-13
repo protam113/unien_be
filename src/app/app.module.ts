@@ -24,6 +24,12 @@ import { MediaModule } from 'src/modules/media/media.module';
 import { BlogModule } from 'src/modules/blog/blog.module';
 import { ServiceModule } from 'src/modules/service/service.module';
 import { RolesGuard } from 'src/modules/auth/guards/RolesGuard';
+import { ProjectModule } from 'src/modules/project/project.module';
+import { SeoModule } from 'src/modules/seo/seo.module';
+import { HealthModule } from 'src/modules/health/health.module';
+import { ProductModule } from 'src/modules/product/product.module';
+import { ContactModule } from 'src/modules/contact/contact.module';
+import { SystemLogModule } from 'src/modules/system-log/system-log.module';
 
 @Module({
   imports: [
@@ -47,12 +53,18 @@ import { RolesGuard } from 'src/modules/auth/guards/RolesGuard';
     DatabaseModule,
     ScheduleModule.forRoot(),
     RedisCacheModule,
+    SystemLogModule,
+    HealthModule,
     AuthModule,
     UserModule,
+    SeoModule,
     MediaModule,
     CategoryModule,
     BlogModule,
     ServiceModule,
+    ProjectModule,
+    ProductModule,
+    ContactModule,
   ],
   controllers: [AppBaseController],
   providers: [
@@ -127,6 +139,14 @@ export class AppModule {
         },
         {
           path: '/project/:slug',
+          method: RequestMethod.GET,
+        },
+        {
+          path: '/product',
+          method: RequestMethod.GET,
+        },
+        {
+          path: '/product/:slug',
           method: RequestMethod.GET,
         },
         {

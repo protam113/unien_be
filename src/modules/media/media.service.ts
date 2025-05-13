@@ -162,6 +162,75 @@ export class MediaService {
     }
   }
 
+  async uploadMultipleFiles(
+    folderPath: string,
+    files: Express.Multer.File[],
+  ): Promise<{ urls: string[] }> {
+    if (!files || !Array.isArray(files) || files.length === 0) {
+      throw new BadRequestException({
+        message: 'No files provided',
+        code: 'FILES_REQUIRED',
+      });
+    }
+
+    const cacheKeyPattern = buildCacheKey('XAuthToken', {});
+    let authToken = await this.getAuthToken();
+    const sanitizedPath = folderPath.replace(/^\/+|\/+$/g, '');
+
+    const attemptUpload = async (
+      file: Express.Multer.File,
+      token: string,
+    ): Promise<string> => {
+      const uploadPath = `${this.BASE_URL}${sanitizedPath}/${file.originalname}`;
+      const response = await fetch(uploadPath, {
+        method: 'PUT',
+        headers: {
+          'X-Auth-Token': token,
+          'Content-Type': file.mimetype,
+        },
+        body: file.buffer,
+      });
+
+      if (response.status === 401) {
+        this.logger.warn(
+          `Token expired during file "${file.originalname}". Retrying with new token.`,
+        );
+        await this.cacheService.delByPattern(`${cacheKeyPattern}*`);
+        const newToken = await this.getAuthToken();
+        return await attemptUpload(file, newToken); // retry with new token
+      }
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        this.logger.error(`Error uploading ${file.originalname}:`, errorData);
+        throw new BadRequestException({
+          message: `Failed to upload file "${file.originalname}"`,
+          code: 'UPLOAD_FAILED',
+        });
+      }
+
+      return uploadPath;
+    };
+
+    try {
+      const uploadResults: string[] = [];
+
+      for (const file of files) {
+        const uploadedUrl = await attemptUpload(file, authToken);
+        uploadResults.push(uploadedUrl);
+      }
+
+      return { urls: uploadResults };
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      throw new BadRequestException({
+        message: 'Multiple file upload failed',
+        details: error.message,
+        code: 'MULTIPLE_UPLOAD_ERROR',
+      });
+    }
+  }
+
   async deleteFiles(
     fileUrls: string[],
   ): Promise<{ message: string; deleted: string[] }> {

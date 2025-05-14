@@ -71,6 +71,7 @@ export class ServiceService {
 
     const services = await this.serviceModel
       .find(filter)
+      .populate('category', '_id name')
       .skip((options.page - 1) * options.limit)
       .sort({ createdAt: -1 })
       .limit(options.limit)

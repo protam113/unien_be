@@ -27,10 +27,14 @@ export function buildCategoryFilter(params: {
   }
 
   if (type) {
-    const typeArray = type.split(',');
-    const validTypes = typeArray.filter((s) =>
-      Object.values(CategoryType).includes(s as CategoryType),
-    );
+    const validTypes = Array.isArray(type)
+      ? type.filter((s) =>
+          Object.values(CategoryType).includes(s as CategoryType),
+        )
+      : [type].filter((s) =>
+          Object.values(CategoryType).includes(s as CategoryType),
+        );
+
     if (validTypes.length > 0) {
       filter.type = { $in: validTypes };
     }

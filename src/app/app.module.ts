@@ -96,25 +96,29 @@ export class AppModule {
     consumer
       .apply(JwtCookieMiddleware)
       .exclude(
-        '/public/auth/login',
+        '/v1/public/auth/login',
         {
-          path: '/health',
+          path: '/v1/health',
           method: RequestMethod.GET,
         },
         {
-          path: '/contact',
+          path: '/v1/seo',
+          method: RequestMethod.GET,
+        },
+        {
+          path: '/v1/contact',
           method: RequestMethod.POST,
         },
         {
-          path: '/category',
+          path: '/v1/category',
           method: RequestMethod.GET,
         },
         {
-          path: '/category/:slug',
+          path: '/v1/category/:slug',
           method: RequestMethod.GET,
         },
         {
-          path: '/blog',
+          path: '/v1/blog',
           method: RequestMethod.GET,
         },
         {
@@ -122,35 +126,31 @@ export class AppModule {
           method: RequestMethod.GET,
         },
         {
-          path: '/pricing/:slug',
+          path: '/v1/service',
           method: RequestMethod.GET,
         },
         {
-          path: '/service',
+          path: '/v1/service/:slug',
           method: RequestMethod.GET,
         },
         {
-          path: '/service/:slug',
+          path: '/v1/project',
           method: RequestMethod.GET,
         },
         {
-          path: '/project',
+          path: '/v1/project/:slug',
           method: RequestMethod.GET,
         },
         {
-          path: '/project/:slug',
+          path: '/v1/product',
           method: RequestMethod.GET,
         },
         {
-          path: '/product',
+          path: '/v1/product/:slug',
           method: RequestMethod.GET,
         },
         {
-          path: '/product/:slug',
-          method: RequestMethod.GET,
-        },
-        {
-          path: '/tracking/track',
+          path: '/v1/tracking/track',
           method: RequestMethod.POST,
         },
       )

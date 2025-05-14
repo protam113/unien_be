@@ -18,6 +18,8 @@ export class JwtCookieMiddleware implements NestMiddleware {
   ) {}
 
   use(req: Request, res: Response, next: NextFunction) {
+    console.log(`JwtCookieMiddleware: ${req.method} ${req.path}`);
+
     const accessToken = req.cookies?.user_token;
     const refreshToken = req.cookies?.refresh_token;
 

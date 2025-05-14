@@ -50,6 +50,7 @@ export class ProductService {
     endDate?: string,
     status?: ProductStatus,
     category?: string,
+    sortByPrice?: string,
   ): Promise<Pagination<DataResponse>> {
     const cacheKey = buildCacheKey('products', {
       page: options.page,
@@ -58,6 +59,7 @@ export class ProductService {
       end: endDate,
       status: status || 'all',
       category: category || 'all',
+      sortByPrice: sortByPrice || 'all',
     });
     const cached =
       await this.redisCacheService.get<Pagination<DataResponse>>(cacheKey);
@@ -66,16 +68,29 @@ export class ProductService {
       this.logger.log(`Cache HIT: ${cacheKey}`);
       return cached;
     }
-    const filter = buildProductFilter({ startDate, endDate, status, category });
 
-    const products = await this.productModel
-      .find(filter)
-      .skip((options.page - 1) * options.limit)
-      .sort({ createdAt: -1 })
-      .limit(options.limit)
-      .exec();
+    // Kiểm tra và ép kiểu sortByPrice về 'asc' hoặc 'desc'
+    const validSortByPrice =
+      sortByPrice === 'asc' || sortByPrice === 'desc' ? sortByPrice : undefined;
 
-    const total = await this.productModel.countDocuments(filter);
+    // Build filter và sort
+    const { filter, sort } = buildProductFilter({
+      startDate,
+      endDate,
+      status,
+      category,
+      sortByPrice: validSortByPrice, // Pass validated sortByPrice
+    });
+
+    const [products, total] = await Promise.all([
+      this.productModel
+        .find(filter)
+        .populate('category', '_id name')
+        .sort(sort || {}) // Nếu không có sort thì không sắp xếp
+        .skip((options.page - 1) * options.limit)
+        .limit(options.limit),
+      this.productModel.countDocuments(filter),
+    ]);
 
     const results = products.map(toDataResponse);
 
@@ -158,7 +173,7 @@ export class ProductService {
         folderPath,
         files,
       );
-      imageUrls = uploadedImages.urls; // 🔧 dùng `urls` chứ không phải `url`
+      imageUrls = uploadedImages.urls;
     } catch (error) {
       throw new BadRequestException({
         statusCode: StatusCode.BadRequest,

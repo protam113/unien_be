@@ -17,7 +17,7 @@ export class CategoryEntity extends Base {
   })
   slug: string;
 
-  @Prop({ enum: CategoryType, default: CategoryType.Blogs })
+  @Prop({ enum: CategoryType })
   type: string;
 
   @Prop({ enum: CategoryStatus, default: CategoryStatus.Draft })

@@ -67,6 +67,7 @@ export class CategoryController {
       startDate,
       endDate,
       status as CategoryStatus,
+      type,
     );
   }
 

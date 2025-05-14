@@ -42,6 +42,7 @@ export class ProductController {
     @Query('limit') limit: number = 10,
     @Query('status') status?: ProductStatus,
     @Query('category') category?: string,
+    @Query('sortByPrice') sortByPrice?: string,
   ) {
     this.logger.debug('Fetching products with filters:', {
       startDate,
@@ -50,6 +51,7 @@ export class ProductController {
       limit,
       status,
       category,
+      sortByPrice,
     });
 
     return this.productService.findAll(
@@ -58,12 +60,13 @@ export class ProductController {
       endDate,
       status as ProductStatus,
       category,
+      sortByPrice,
     );
   }
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FilesInterceptor('files', 10)) // 👈 đa file
+  @UseInterceptors(FilesInterceptor('files', 10))
   async create(
     @Body() createProductDto: CreateProductDto,
     @Req() req,

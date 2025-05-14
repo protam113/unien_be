@@ -5,8 +5,10 @@ export function buildProductFilter(params: {
   endDate?: string;
   status?: string;
   category?: string;
+  price?: string;
+  sortByPrice?: 'asc' | 'desc'; // Thêm tham số sắp xếp theo giá
 }): Record<string, any> {
-  const { startDate, endDate, status, category } = params;
+  const { startDate, endDate, status, category, price, sortByPrice } = params;
   const filter: Record<string, any> = {};
 
   if (startDate && endDate) {
@@ -27,5 +29,14 @@ export function buildProductFilter(params: {
     filter.category = category;
   }
 
-  return filter;
+  // Nếu có tham số sắp xếp theo giá
+  let sort: Record<string, number> | undefined;
+  if (sortByPrice) {
+    sort = { price: sortByPrice === 'asc' ? 1 : -1 }; // 'asc' là giá rẻ nhất, 'desc' là giá cao nhất
+  }
+
+  return {
+    filter,
+    sort,
+  };
 }

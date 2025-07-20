@@ -122,7 +122,7 @@ export class AppModule {
           method: RequestMethod.GET,
         },
         {
-          path: '/blog/:slug',
+          path: '/v1/blog/:slug',
           method: RequestMethod.GET,
         },
         {
